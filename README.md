@@ -1,2 +1,598 @@
-# laxmi
-a small way to show my love.
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Little Surprise For You!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+            overflow-x: hidden;
+            color: #333;
+        }
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .compliment-box {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.5s ease-in-out;
+        }
+        .floating-particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff4757;
+            border-radius: 50%;
+            opacity: 0;
+            animation: float 10s infinite ease-in-out;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+        #love-note {
+            position: absolute;
+            top: 85vh;
+            left: 80vw;
+            background-color: #ff4757;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 1000;
+            user-select: none;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: top 0.5s ease-in-out, left 0.5s ease-in-out, transform 0.2s ease;
+        }
+        #love-note:active {
+            transform: scale(0.95);
+        }
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff4757;
+            pointer-events: none;
+            z-index: 999;
+            animation: burst 0.8s ease-out forwards;
+            clip-path: polygon(50% 100%, 0 45%, 20% 0, 80% 0, 100% 45%);
+        }
+        @keyframes burst {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
+        }
+
+        /* --- Digital Memory Lane (Timeline) Styles --- */
+        .timeline-container {
+            position: relative;
+            max-width: 1000px;
+            margin: 50px auto;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: rgba(255, 255, 255, 0.7);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 6px;
+            z-index: -1;
+        }
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            right: -12px;
+            background-color: white;
+            border: 4px solid #ff9a9e;
+            top: 32px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-left { left: 0; }
+        .timeline-right { left: 50%; }
+        .timeline-right::after { left: -12px; }
+        
+        /* --- Walking Couple Animation --- */
+        .walking-animation-container {
+            width: 100%;
+            height: 120px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: -20px;
+        }
+        .walking-couple {
+            display: flex;
+            align-items: flex-end;
+            position: absolute;
+            bottom: 10px;
+            animation: endless-walk 25s linear infinite;
+        }
+        .person {
+            position: relative;
+            width: 60px;
+            height: 90px;
+        }
+        .person-head {
+            width: 35px;
+            height: 35px;
+            background-color: #f2d5b6; /* Skin tone */
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 12.5px;
+            z-index: 2;
+        }
+        .person-body {
+            position: absolute;
+            bottom: 25px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+        }
+        .girl {
+            z-index: 3;
+            transform: translateX(15px);
+        }
+        .girl .person-head::after { /* Hair */
+            content: '';
+            position: absolute;
+            background-color: #3D3535;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            top: -2px;
+            left: -2px;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 70%, 75% 80%, 70% 60%, 65% 90%, 50% 60%, 35% 90%, 30% 60%, 25% 80%, 0% 70%);
+        }
+        .girl .person-body {
+            background-color: #d9534f; /* Red sweater */
+            border-radius: 10px;
+        }
+        .girl .arm {
+            width: 15px;
+            height: 10px;
+            background: #d9534f;
+            position: absolute;
+            left: -5px;
+            top: 10px;
+            border-radius: 5px;
+            z-index: -1;
+        }
+        .boy { z-index: 2; }
+        .boy .person-head::after { /* Hair */
+            content: '';
+            position: absolute;
+            background-color: #3D3535;
+            width: 35px;
+            height: 25px;
+            border-radius: 50% 50% 0 0;
+            top: 0;
+            left: 0;
+        }
+        .boy .person-body {
+            background-color: #f7f3e3; /* Cream sweater */
+            border-radius: 10px;
+        }
+        .legs {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30px;
+        }
+        .leg {
+            width: 12px;
+            height: 28px;
+            position: absolute;
+            bottom: 0;
+            left: 24px;
+            transform-origin: top center;
+            border-radius: 6px;
+        }
+        .girl .leg { background-color: #f7f3e3; }
+        .boy .leg { background-color: #5a6a72; }
+        .leg-front { animation: walk-front 1.5s linear infinite; }
+        .leg-back { animation: walk-back 1.5s linear infinite; z-index: -1; }
+
+
+        @keyframes endless-walk {
+            0% { transform: translateX(-150px); }
+            100% { transform: translateX(100vw); }
+        }
+        @keyframes walk-front {
+            0% { transform: rotate(-25deg); }
+            50% { transform: rotate(25deg); }
+            100% { transform: rotate(-25deg); }
+        }
+        @keyframes walk-back {
+            0% { transform: rotate(25deg); }
+            50% { transform: rotate(-25deg); }
+            100% { transform: rotate(25deg); }
+        }
+
+        @media screen and (max-width: 768px) {
+            .timeline-container::after { left: 31px; }
+            .timeline-item { width: 100%; padding-left: 70px; padding-right: 25px; }
+            .timeline-right { left: 0%; }
+            .timeline-left::after, .timeline-right::after { left: 19px; }
+        }
+    </style>
+</head>
+<body class="relative">
+
+    <div id="love-note">I love you Laxmi ❤️</div>
+    <div id="particle-container" class="absolute top-0 left-0 w-full h-full pointer-events-none"></div>
+
+    <div class="container mx-auto p-4 sm:p-8">
+        <header class="my-8 sm:my-16">
+             <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10">
+                 <div class="flex-shrink-0">
+                     <img src="profile.jpg" 
+                          onerror="this.onerror=null;this.src='https://placehold.co/200x200/FFC0CB/FFFFFF?text=Image+Error';"
+                          alt="A beautiful picture of Laxmi" 
+                          class="w-48 h-48 md:w-64 md:h-64 rounded-full object-cover border-4 border-white shadow-2xl">
+                 </div>
+                 <div class="text-center md:text-left">
+                      <h1 class="title-font text-4xl sm:text-6xl font-bold text-white drop-shadow-lg">To My Dearest Laxmi</h1>
+                      <p class="text-lg sm:text-xl mt-2 text-white/90">The one who stole my heart.</p>
+                      <div class="mt-4 p-4 bg-white/20 rounded-xl max-w-md backdrop-filter backdrop-blur-sm">
+                           <p class="text-white/90 italic">
+                               "Every day with you is my new favorite day. This is just a small way to show you how much you mean to me. I love every little thing about you."
+                           </p>
+                      </div>
+                 </div>
+             </div>
+        </header>
+
+        <main>
+            <div class="walking-animation-container">
+                <div class="walking-couple">
+                    <div class="person boy">
+                        <div class="person-head"></div>
+                        <div class="person-body"></div>
+                        <div class="legs">
+                            <div class="leg leg-front"></div>
+                            <div class="leg leg-back"></div>
+                        </div>
+                    </div>
+                    <div class="person girl">
+                        <div class="person-head"></div>
+                        <div class="person-body"></div>
+                        <div class="arm"></div>
+                        <div class="legs">
+                            <div class="leg leg-front"></div>
+                            <div class="leg leg-back"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="compliment-container" class="compliment-box text-center p-6 sm:p-8 rounded-2xl shadow-xl max-w-2xl mx-auto mb-12">
+                <h2 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-4">A Quick Compliment...</h2>
+                <p id="compliment-text" class="text-xl sm:text-2xl text-pink-600 h-16 flex items-center justify-center"></p>
+            </div>
+
+            <div class="max-w-4xl mx-auto mb-12">
+                <h2 class="title-font text-3xl sm:text-4xl font-bold text-white drop-shadow-lg text-center mb-6">Soundtrack For You</h2>
+                <div class="card shadow-lg overflow-hidden p-2">
+                     <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/1gYRrHI197HHAjIzfnibsX?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+            </div>
+
+            <div class="max-w-4xl mx-auto mb-12">
+                <h2 class="title-font text-3xl sm:text-4xl font-bold text-white drop-shadow-lg text-center mb-6">Our Little Movie</h2>
+                <div class="card shadow-lg overflow-hidden p-2">
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0;">
+                        <iframe src="https://www.youtube.com/embed/LaCMNDUi-q8?si=62rOxkj3MtYm0_Xi" 
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius:12px;" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-4xl mx-auto mb-12 text-center">
+                 <h2 class="title-font text-3xl sm:text-4xl font-bold text-white drop-shadow-lg text-center mb-6">Our Digital Memory Lane</h2>
+            </div>
+            <div class="timeline-container">
+                <div class="timeline-item timeline-left">
+                    <div class="card shadow-lg overflow-hidden">
+                        <img src="kumbh.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FFC0CB/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2">Kumbh</h3>
+                            <p class="text-gray-600">Laxmi, you look so cute and dharmik! That's why I made it the first image, Btw your smile made this pic more special.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item timeline-right">
+                    <div class="card shadow-lg overflow-hidden">
+                        <img src="withoutask.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/D8BFD8/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2">First snap</h3>
+                            <p class="text-gray-600">yeh apne pic aapne bina mere maange diya tha, aur jab maine dekha toh bohot khuss hua tha ki bina maange, hmm </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item timeline-left">
+                    <div class="card shadow-lg overflow-hidden">
+                        <img src="didisath.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FFB6C1/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2">Pehli baar mandir </h3>
+                            <p class="text-gray-600">jab tumne bola ki thik hai chlte hai mai bohot khuss tha, aur jab suit mai dekha tha toh mai sach mai saaaan reh gya tha didi na boli toh hil gya tha, aur mai phle baar kisi ke sath gya tha aur mujhe bohot achha lga tha </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item timeline-right">
+                     <div class="card shadow-lg overflow-hidden">
+                         <img src="1stsath_mai.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E6E6FA/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                         <div class="p-6">
+                             <h3 class="text-2xl font-semibold mb-2">First time at Talab(gulab) </h3>
+                             <p class="text-gray-600">yeh bohot sunder jagah hai yrr, meri fav. place bn gyi hai. waise yeh phli baar tha hum itne lambe samay tak sath the aur kaffi achha lga tha ki aap meri care krti hai</p>
+                         </div>
+                     </div>
+                </div>
+                 <div class="timeline-item timeline-left">
+                     <div class="card shadow-lg overflow-hidden">
+                         <img src="1sttime_VC.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FFDAB9/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                         <div class="p-6">
+                             <h3 class="text-2xl font-semibold mb-2">Video call</h3>
+                             <p class="text-gray-600">Mujhe abhi yaad hai mai kuch check krne ke liye notification slide kie tumne bola ki ss liye na, maine na bola tumne bola nhi tumne liya fir maine, ss liya hehehe.</p>
+                         </div>
+                     </div>
+                </div>
+                 <div class="timeline-item timeline-right">
+                     <div class="card shadow-lg overflow-hidden">
+                         <img src="1time_hand.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/dda0dd/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                         <div class="p-6">
+                             <h3 class="text-2xl font-semibold mb-2">just feel it</h3>
+                             <p class="text-gray-600"> achha tha, waise aapke hath soft hai.</p>
+                         </div>
+                     </div>
+                </div>
+                <div class="timeline-item timeline-left">
+                    <div class="card shadow-lg overflow-hidden">
+                        <img src="Snapchat-417489650.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FFC0CB/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2">maine click kia </h3>
+                            <p class="text-gray-600">aap acchi lg rhi hai isme kaffi sunder bas(soory bolne ke liye) thodi isme patli lgti hai.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item timeline-right">
+                    <div class="card shadow-lg overflow-hidden">
+                        <img src="sneekpic.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/D8BFD8/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2">Cute lg rhe</h3>
+                            <p class="text-gray-600">dekhe kitne tezzi si pic le liya tha</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item timeline-left">
+                    <div class="card shadow-lg overflow-hidden">
+                        <img src="vtsathmai.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FFB6C1/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2">cute moment</h3>
+                            <p class="text-gray-600">yeh achha lg rha aapke balo pe </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item timeline-right">
+                     <div class="card shadow-lg overflow-hidden">
+                         <img src="pra_lak_ghibli.png" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E6E6FA/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                         <div class="p-6">
+                             <h3 class="text-2xl font-semibold mb-2">cute couple </h3>
+                             <p class="text-gray-600"> achhe lg rhe hai n hum dono</p>
+                         </div>
+                     </div>
+                </div>
+                 <div class="timeline-item timeline-left">
+                     <div class="card shadow-lg overflow-hidden">
+                         <img src="myfavpic.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FFDAB9/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                         <div class="p-6">
+                             <h3 class="text-2xl font-semibold mb-2">Couple</h3>
+                             <p class="text-gray-600">kaffi kaffi gorgeous and beautiful lg rhe aap, Is poori jagah ki khubsurti tumhare aage feeki hai.</p>
+                         </div>
+                     </div>
+                </div>
+                 <div class="timeline-item timeline-right">
+                     <div class="card shadow-lg overflow-hidden">
+                         <img src="aapkifavclick.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/dda0dd/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                         <div class="p-6">
+                             <h3 class="text-2xl font-semibold mb-2">Apki pasandida pic</h3>
+                             <p class="text-gray-600">arrey yrr jo phul lagya tha woh kha gya waise isme aap kisi ki wife lg rhe hehehe</p>
+                         </div>
+                     </div>
+                </div>
+                <div class="timeline-item timeline-left">
+                    <div class="card shadow-lg overflow-hidden">
+                        <img src="hotness.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FFC0CB/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2">Looking hot</h3>
+                            <p class="text-gray-600">isme aapka makeup achha lg rha and kafi chamak rhi kya baat hai, ha ha bolo?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item timeline-right">
+                    <div class="card shadow-lg overflow-hidden">
+                        <img src="shorthair.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/D8BFD8/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2">Short hair</h3>
+                            < class="text-gray-600">achha lgta hai aap pe mam, waise aap jab talab pe lakdi se bandhte ho toh woh mujhe kaafi achha lgtha hai, mtlb sunder lgte ho usme </p>    
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item timeline-left">
+                    <div class="card shadow-lg overflow-hidden">
+                        <img src="tgdp.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FFB6C1/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2">My fav. profile</h3>
+                            <p class="text-gray-600">yeh achha lgta hai back se aap waise koi baat krte time dekh leta hai bhi toh koi nhi</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item timeline-right">
+                     <div class="card shadow-lg overflow-hidden">
+                         <img src="myfav.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E6E6FA/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                         <div class="p-6">
+                             <h3 class="text-2xl font-semibold mb-2">My fav. picture </picture></h3>
+                             <isme class="text-gray-600">isem aap kaafi masum lgte hai aur same time pe attractive bhi.</p>
+                         </div>
+                     </div>
+                </div>
+                 <div class="timeline-item timeline-left">
+                     <div class="card shadow-lg overflow-hidden">
+                         <img src="lakshghibli.png" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FFDAB9/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                         <div class="p-6">
+                             <h3 class="text-2xl font-semibold mb-2">My second fav. pic </h3>
+                             <p class="text-gray-600">HA HA HA aap aise bacho wali harkte krte hue achhe lgte ho, aise hi rehna hmesha happy happy.</p>
+                         </div>
+                     </div>
+                </div>
+                 <div class="timeline-item timeline-right">
+                     <div class="card shadow-lg overflow-hidden">
+                         <img src="laksh2022.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/dda0dd/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                         <div class="p-6">
+                             <h3 class="text-2xl font-semibold mb-2">My second fav. pic</h3>
+                             <p class="text-gray-600">isme aap bohot sunder lg rhi ho, aur mujhe aapki aankhein bohot pasand hai, aur yeh pic meri fav. hai, kyuki isme aapki aankhein kaafi khoobsurat lg rhi hai.</p>
+                         </div>
+                     </div>
+                </div>
+                <div class="timeline-item timeline-left">
+                    <div class="card shadow-lg overflow-hidden">
+                        <img src="pyari.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FFC0CB/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2">wife material </h3>
+                            <p class="text-gray-600">itna masum itna masum, yrr tumhe dekh lg nhi rha tum kitna pitte ho mere ko</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item timeline-right">
+                    <div class="card shadow-lg overflow-hidden">
+                        <img src="ghibli.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/D8BFD8/FFFFFF?text=Image+Error';" alt="A lovely memory" class="w-full">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2">Haaye, Uff ek aur crack</h3>
+                            <p class="text-gray-600">Laxmi, you look absolutely adorable and magical in this picture—like a character straight out of a fairytale. Your cuteness and charm make every moment brighter!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="text-center mt-16 pb-8">
+            <p class="text-white/80">Made with all my love, just for you sona.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Compliment Updater ---
+            const compliments = [
+                "Are you a Wi-Fi signal? Because I'm feeling a really strong connection here. 😉",
+                "You must be a magician, because whenever I look at you, everyone else disappears.",
+                "Is your name Google? Because you have everything I've been searching for.",    
+                "Knowing you feels like coming home. You're my favorite place to be. ❤️",
+                "You light up my world like nobody else. Your smile is my sunshine.",
+                "I feel like my whole life was just black and white until I met you, and you brought all the color. 🎨",
+                "There are billions of people in the world, and for some reason, all my heart cares about is you.",
+                "You must be made of copper and tellurium, because you're Cu-Te.",
+                "I didn't believe in soulmates until my soul met yours.",
+                "I must be a snowflake, because I've fallen for you.",
+
+            ];
+
+            const complimentText = document.getElementById('compliment-text');
+            const complimentContainer = document.getElementById('compliment-container');
+            let currentIndex = 0;
+            function updateCompliment() {
+                complimentContainer.style.opacity = '0';
+                complimentContainer.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    currentIndex = (currentIndex + 1) % compliments.length;
+                    complimentText.textContent = compliments[currentIndex];
+                    complimentContainer.style.opacity = '1';
+                    complimentContainer.style.transform = 'scale(1)';
+                }, 500);
+            }
+            complimentText.textContent = compliments[0];
+            // Update every 7 seconds
+            setInterval(updateCompliment, 7000);
+
+            const floatingParticleContainer = document.getElementById('particle-container');
+            const floatingParticleCount = 30;
+            for (let i = 0; i < floatingParticleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('floating-particle');
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.animationDelay = `${Math.random() * 10}s`;
+                particle.style.animationDuration = `${5 + Math.random() * 5}s`;
+                particle.style.transform = `scale(${Math.random()})`;
+                particle.style.background = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.2})`;
+                particle.style.clipPath = 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)';
+                floatingParticleContainer.appendChild(particle);
+            }
+
+            const loveNote = document.getElementById('love-note');
+            loveNote.addEventListener('click', function(e) {
+                createParticleBurst(e.clientX, e.clientY);
+                moveLoveNote();
+            });
+            function createParticleBurst(x, y) {
+                const particleCount = 20;
+                const colors = ['#ff4757', '#ff7f50', '#ff6b81', '#ffffff'];
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    particle.style.left = `${x}px`;
+                    particle.style.top = `${y}px`;
+                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    const randomX = (Math.random() - 0.5) * 200;
+                    const randomY = (Math.random() - 0.5) * 200;
+                    particle.style.setProperty('--x', `${randomX}px`);
+                    particle.style.setProperty('--y', `${randomY}px`);
+                    document.body.appendChild(particle);
+                    setTimeout(() => { particle.remove(); }, 800);
+                }
+            }
+            function moveLoveNote() {
+                const vw = window.innerWidth;
+                const vh = window.innerHeight;
+                const noteWidth = loveNote.offsetWidth;
+                const noteHeight = loveNote.offsetHeight;
+                const newTop = Math.random() * (vh - noteHeight - 40) + 20;
+                const newLeft = Math.random() * (vw - noteWidth - 40) + 20;
+                loveNote.style.top = `${newTop}px`;
+                loveNote.style.left = `${newLeft}px`;
+            }
+        });
+    </script>
+</body>
+</html>
+
