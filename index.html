@@ -586,12 +586,25 @@
                 particle.style.clipPath = 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)';
                 floatingParticleContainer.appendChild(particle);
             }
+const loveNote = document.getElementById('love-note');
+let loveNoteClicks = 0; // This creates a counter starting at 0
 
-            const loveNote = document.getElementById('love-note');
-            loveNote.addEventListener('click', function(e) {
-                createParticleBurst(e.clientX, e.clientY);
-                moveLoveNote();
-            });
+loveNote.addEventListener('click', function(e) {
+    loveNoteClicks++; // Increases the counte
+    
+    // check look
+    if (loveNoteClicks === 10) {
+        // 
+        alert("testing the code prashant_is_here"); 
+        
+        // Reset the counter
+        loveNoteClicks = 0; 
+    }
+    
+    // Keep your original cool animations running
+    createParticleBurst(e.clientX, e.clientY);
+    moveLoveNote();
+});
             function createParticleBurst(x, y) {
                 const particleCount = 20;
                 const colors = ['#ff4757', '#ff7f50', '#ff6b81', '#ffffff'];
